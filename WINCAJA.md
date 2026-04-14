@@ -70,6 +70,81 @@ Requiere instalar: Visual Studio 2022, Rust 1.75, Flutter 3.24.5, LLVM 15, vcpkg
 
 El `.exe` se descarga desde `soporte.wincaja.mx` (ruta `/`). El link apunta al ultimo Release de este repo. La pagina esta en el repo `wincaja/WinCaja-Assist` → `app/routes/index.tsx`.
 
+## Sistema de actualizaciones
+
+La app verifica al abrirse si hay una version nueva consultando el servidor de versiones:
+
+```
+App se abre → GET http://52.224.5.18:21114/version/latest
+           → Si hay version nueva → Muestra aviso "Actualizar"
+           → Si es la misma version → Funciona normal
+```
+
+### Archivos involucrados
+
+| Archivo | Repo | Que hace |
+|---------|------|----------|
+| `src/common.rs` (funcion `check_software_update`) | Este repo | Ejecuta la verificacion al abrir la app |
+| `libs/hbb_common/src/lib.rs` (URL en `version_check_request`) | hbb_common | Define la URL del servidor de versiones (`52.224.5.18:21114`) |
+| `version-api/version.json` | wincaja-remote (servidor) | Archivo que controla cual es la version vigente |
+
+### Como sacar una nueva version (paso a paso completo)
+
+**Paso 1**: Haz los cambios en este repo (branding, iconos, textos) y/o en `hbb_common`
+
+**Paso 2**: Actualiza el numero de version en DOS archivos de este repo:
+
+```
+# En .github/workflows/build-wincaja.yml
+VERSION: "1.1.0"   # <-- cambiar aqui
+
+# En Cargo.toml
+version = "1.1.0"  # <-- y aqui
+```
+
+**Paso 3**: Commit y push
+
+```bash
+git add .
+git commit -m "feat: version 1.1.0 - descripcion"
+git push origin master
+```
+
+**Paso 4**: Compilar en GitHub Actions
+
+Ve a [Actions](https://github.com/wincaja/wincaja-remote-client/actions) → "Build WinCaja Remote (Windows)" → "Run workflow" → espera ~20 min
+
+**Paso 5**: Actualizar el servidor de versiones
+
+Conectate al servidor (VM Azure) y edita:
+
+```bash
+cd ~/wincaja-remote
+nano version-api/version.json
+```
+
+Cambia a:
+
+```json
+{
+  "url": "https://github.com/wincaja/wincaja-remote-client/releases/download/v1.1.0/wincaja-remote-1.1.0-x86_64.exe"
+}
+```
+
+Reinicia:
+
+```bash
+docker restart rustdesk-version-api
+```
+
+**Paso 6**: Verificar
+
+```bash
+curl http://localhost:21114/version/latest
+```
+
+Los usuarios veran el aviso de actualizacion la proxima vez que abran la app.
+
 ## Workflow de GitHub Actions
 
 El archivo `.github/workflows/build-wincaja.yml` define el proceso de compilacion:
@@ -77,4 +152,5 @@ El archivo `.github/workflows/build-wincaja.yml` define el proceso de compilacio
 1. Genera el bridge Rust-Flutter (Ubuntu)
 2. Compila la app para Windows x86_64 (Windows Server 2022)
 3. Empaqueta el instalador auto-extraible
-4. Sube el `.exe` como artifact y crea un Release
+4. Elimina el Release anterior si existe
+5. Sube el `.exe` como artifact y crea un nuevo Release
