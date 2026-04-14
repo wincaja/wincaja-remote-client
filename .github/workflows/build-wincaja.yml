@@ -116,13 +116,13 @@ jobs:
       - name: Build WinCaja Remote
         run: |
           python3 .\build.py --portable --flutter --skip-portable-pack
-          mv ./flutter/build/windows/x64/runner/Release ./wincaja-remote
+          mv ./flutter/build/windows/x64/runner/Release ./rustdesk
 
       - name: Download RustDeskTempTopMostWindow artifacts
         uses: actions/download-artifact@master
         with:
           name: topmostwindow-artifacts
-          path: "./wincaja-remote"
+          path: "./rustdesk"
 
       - name: Build self-extracted executable
         shell: bash
@@ -130,7 +130,7 @@ jobs:
           sed -i '/dpiAware/d' res/manifest.xml
           pushd ./libs/portable
           pip3 install -r requirements.txt
-          python3 ./generate.py -f ../../wincaja-remote/ -o . -e ../../wincaja-remote/wincaja-remote.exe
+          python3 ./generate.py -f ../../rustdesk/ -o . -e ../../rustdesk/rustdesk.exe
           popd
           mkdir -p ./SignOutput
           mv ./target/release/rustdesk-portable-packer.exe ./SignOutput/wincaja-remote-${{ env.VERSION }}-x86_64.exe
