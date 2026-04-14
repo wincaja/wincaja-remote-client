@@ -141,6 +141,12 @@ jobs:
           name: wincaja-remote-windows-x86_64
           path: SignOutput
 
+      - name: Delete existing release
+        continue-on-error: true
+        run: gh release delete v${{ env.VERSION }} --repo ${{ github.repository }} -y --cleanup-tag
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
