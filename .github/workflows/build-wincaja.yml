@@ -48,6 +48,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           submodules: recursive
+          token: ${{ secrets.HBB_COMMON_PAT }}
 
       - name: Restore bridge files
         uses: actions/download-artifact@master
