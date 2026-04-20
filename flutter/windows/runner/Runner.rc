@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "WinCaja" "\0"
-            VALUE "FileDescription", "WinCaja Remote - Soporte Remoto" "\0"
+            VALUE "FileDescription", "WinRemoto - Soporte Remoto" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "wincaja-remote" "\0"
+            VALUE "InternalName", "winremoto" "\0"
             VALUE "LegalCopyright", "Copyright © 2026 WinCaja. Todos los derechos reservados." "\0"
-            VALUE "OriginalFilename", "wincaja-remote.exe" "\0"
-            VALUE "ProductName", "WinCaja Remote" "\0"
+            VALUE "OriginalFilename", "winremoto.exe" "\0"
+            VALUE "ProductName", "WinRemoto" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END
