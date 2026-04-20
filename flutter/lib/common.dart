@@ -627,7 +627,7 @@ class MyTheme {
       case "dark":
         return ThemeMode.dark;
       default:
-        return ThemeMode.system;
+        return ThemeMode.light;
     }
   }
 }
@@ -3691,7 +3691,7 @@ Widget loadLogo() {
             },
           );
           return Container(
-            constraints: BoxConstraints(maxWidth: 300, maxHeight: 60),
+            constraints: BoxConstraints(maxWidth: 300, maxHeight: 100),
             child: image,
           ).marginOnly(left: 12, right: 12, top: 12);
         }

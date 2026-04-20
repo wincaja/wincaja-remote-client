@@ -592,7 +592,10 @@ class _DesktopTabState extends State<DesktopTab>
   }
 
   Widget _buildBar() {
-    return Row(
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Row(
       children: [
         Expanded(
             child: GestureDetector(
@@ -630,24 +633,6 @@ class _DesktopTabState extends State<DesktopTab>
                         child: const SizedBox(
                           width: 78,
                         )),
-                    Offstage(
-                      offstage: kUseCompatibleUiMode || isMacOS,
-                      child: Row(children: [
-                        Offstage(
-                          offstage: !showLogo,
-                          child: loadIcon(16),
-                        ),
-                        Offstage(
-                            offstage: !showTitle,
-                            child: const Text(
-                              "RustDesk",
-                              style: TextStyle(fontSize: 13),
-                            ).marginOnly(left: 2))
-                      ]).marginOnly(
-                        left: 5,
-                        right: 10,
-                      ),
-                    ),
                     Expanded(
                         child: Listener(
                             // handle mouse wheel
@@ -693,6 +678,11 @@ class _DesktopTabState extends State<DesktopTab>
           onClose: onWindowCloseButton,
           labelGetter: labelGetter,
         ).paddingOnly(left: 10)
+      ],
+    ),
+    // WinRemoto centered logo
+    if (!kUseCompatibleUiMode && !isMacOS && showLogo)
+      IgnorePointer(child: loadIcon(28)),
       ],
     );
   }

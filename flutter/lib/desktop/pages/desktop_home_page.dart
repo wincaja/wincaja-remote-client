@@ -81,14 +81,19 @@ class _DesktopHomePageState extends State<DesktopHomePage>
     final isOutgoingOnly = bind.isOutgoingOnly();
     final children = <Widget>[
       if (!isOutgoingOnly) buildPresetPasswordWarning(),
-      if (bind.isCustomClient())
-        Align(
-          alignment: Alignment.center,
-          child: loadPowered(context),
-        ),
       Align(
         alignment: Alignment.center,
-        child: loadLogo(),
+        child: Column(
+          children: [
+            const SizedBox(height: 6),
+            loadPowered(context),
+            const SizedBox(height: 4),
+            Container(
+              constraints: BoxConstraints(maxWidth: 240, maxHeight: 160),
+              child: Image.asset('assets/logo_wincaja_original.png', fit: BoxFit.contain),
+            ),
+          ],
+        ),
       ),
       buildTip(context),
       if (!isOutgoingOnly) buildIDBoard(context),
@@ -132,7 +137,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
       value: gFFI.serverModel,
       child: Container(
         width: isIncomingOnly ? 280.0 : 200.0,
-        color: Theme.of(context).colorScheme.background,
+        color: Theme.of(context).scaffoldBackgroundColor,
         child: Stack(
           children: [
             Column(
@@ -182,7 +187,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
 
   buildRightPane(BuildContext context) {
     return Container(
-      color: Theme.of(context).scaffoldBackgroundColor,
+      color: Theme.of(context).colorScheme.background,
       child: ConnectionPage(),
     );
   }
@@ -462,12 +467,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
 
     if (isWindows && !bind.isDisableInstallation()) {
       if (!bind.mainIsInstalled()) {
-        return buildInstallCard(
-            "", bind.isOutgoingOnly() ? "" : "install_tip", "Install",
-            () async {
-          await rustDeskWinManager.closeAllSubWindows();
-          bind.mainGotoInstall();
-        });
+        // WinCaja: skip install tip, not needed
       } else if (bind.mainIsInstalledLowerVersion()) {
         return buildInstallCard(
             "Status", "Your installation is lower version.", "Click to upgrade",
